@@ -1,10 +1,10 @@
-1,Carboy,chilling_fermenting,2,19.95,37,13,499.99
-2,Thermonator,chilling_fermenting,2,174.99,12,13,1999.99
-3,10 Gallon Kettle,brew_day,1,184.99,4,6,1199.99
-4,Propane Burner,brew_day,1,99.99,22,8,1999.99
-5,German Wheat Yeast,cold_goods,3,6.99,21,19,149.99
-6,British Ale Yeast,cold_goods,3,5.99,2,38,99.99
-7,Pilsner Malt,dry_goods,4,1.99,500,500,999.99
-8,Chocolate Malt,dry_goods,4,2.99,300,200,749.99
-9,Galaxy Hops,dry_goods,4,3.99,58,22,149.99
-10,Magnum Hops,dry_goods,4,2.99,32,3,39.99
+Carboy,chilling_fermenting,2,19.95,37,13,332.49
+Thermonator,chilling_fermenting,2,174.99,12,13,1458.25
+10 Gallon Kettle,brew_day,1,184.99,4,20,1479.92
+Propane Burner,brew_day,1,99.99,22,2,799.92
+German Wheat Yeast (1 pkg),cold_goods,3,6.99,21,3,55.92
+British Ale Yeast (1 pkg),cold_goods,3,5.99,2,22,47.92
+Pilsner Malt (1 lb),dry_goods,4,1.99,500,500,663.33
+Chocolate Malt (1 lb),dry_goods,4,2.99,300,450,747.59
+Galaxy Hops (1 oz),dry_goods,4,3.99,58,42,133.11
+Magnum Hops(1 oz),dry_goods,4,2.99,32,78,109.62

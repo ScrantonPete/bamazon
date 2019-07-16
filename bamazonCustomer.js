@@ -23,15 +23,16 @@ connection.connect(function(err) {
   // run the start function after the connection is made to prompt the user
 });
 // function which prompts the user for what action they should take
-
+console.log("WELCOME TO SLIPPERY PETE's HOMEBREW SUPPLY!");
 var displayProducts = function() {
   var query = "Select * FROM products";
   connection.query(query, function(err, res) {
     if (err) throw err;
     var displayTable = new Table({
       head: ["Item ID", "Product Name", "Department", "Price", "Quantity"],
-      colWidths: [10, 25, 25, 10, 14]
+      colWidths: [10, 30, 25, 10, 10]
     });
+    var IDlist = [];
     for (var i = 0; i < res.length; i++) {
       displayTable.push([
         res[i].position,
@@ -40,25 +41,28 @@ var displayProducts = function() {
         "$" + res[i].price,
         res[i].stock_quantity
       ]);
+      IDlist.push(res[i].position);
     }
+
     console.log(displayTable.toString());
-    purchaseProduct();
+    purchaseProduct(IDlist);
   });
 };
 
-function purchaseProduct() {
+function purchaseProduct(IDlist) {
   inquirer
     .prompt([
       {
         name: "ID",
-        type: "input",
+        type: "list",
         message: "Please enter the Item ID you would like to purchase.",
-        filter: Number
+        choices: IDlist
       },
       {
         name: "Quantity",
         type: "input",
-        message: "How many of that item would you like to purchase?",
+        message:
+          "How many of that item (or POUNDS of Malt) would you like to purchase?",
         fliter: Number
       }
     ])
@@ -77,34 +81,81 @@ function purchaseRequested(ID, purchaseQuantity) {
     if (err) {
       console.log(err);
     }
+    // Testing functionality
+    // console.log(res);
     if (purchaseQuantity <= res[0].stock_quantity) {
       var cost = res[0].price * purchaseQuantity;
       console.log(
-        "The product in stock and it looks like you're ready to start brewing!"
+        "GOOD NEWS!  Your request is available since we have " +
+          res[0].stock_quantity +
+          "(s) in stock. Hopefully this will get you BREW READY!!"
       );
       console.log(
         "That will be $" +
           cost +
-          "for " +
+          " for " +
           purchaseQuantity +
           " " +
           res[0].product_name +
-          ". Thank you!"
+          "(s)."
       );
-      connection.query(
-        "UPDARE products SET stock_quantity = stock_quantity -" +
-          purchaseQuantity +
-          "WHERE position= " +
-          ID
-      );
+
+      inquirer
+        .prompt({
+          name: "confirmPurchase",
+          type: "list",
+          message: "Confirm the above purchase?",
+          choices: ["YES", "NO"]
+        })
+        .then(function(answer) {
+          console.log(answer);
+          if (answer.confirmPurchase === "YES") {
+            sellProduct(
+              res[0].position,
+              res[0].stock_quantity - purchaseQuantity
+            );
+          } else if (answer.confirmPurchase === "NO") {
+            console.log("That's fine! Please check out our other products!");
+            startOver();
+          } else {
+            connection.end();
+          }
+        });
     } else {
       console.log(
         "We don't have that many " +
           res[0].product_name +
-          "in stock. Please request a lower quantity."
+          "(s) in stock. Please request a lower quantity."
       );
     }
-    displayProducts();
+    // displayProducts();
   });
 }
 displayProducts();
+
+function sellProduct(id, qty) {
+  console.log("Thank you for your purchase! HAPPY BREWING!");
+
+  connection.query(
+    "UPDATE products SET stock_quantity = " + qty + " WHERE position= " + id
+  );
+
+  inquirer
+    .prompt({
+      name: "startOver",
+      type: "list",
+      message:
+        "Would you like to see the product list again and shop some more? If not choose [NO] to exit",
+      choices: ["YES", "NO"]
+    })
+    .then(function(answer) {
+      if (answer.startOver === "YES") {
+        displayProducts();
+      } else if (answer.startOver === "NO") {
+        console.log("That's fine! Until next time HAPPY BREWING!");
+        connection.end();
+      } else {
+        console.log("Choice not recognized");
+      }
+    });
+}
