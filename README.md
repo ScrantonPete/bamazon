@@ -1,4 +1,4 @@
-<img src="assets\images\homebrew.jpg" title="bamazon" alt="bamazon"></a>
+<img src="assets\homebrew.jpg" title="bamazon" alt="bamazon"></a>
 
 # Bamazon
 
