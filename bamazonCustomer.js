@@ -1,8 +1,11 @@
+// Dependencies
+
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require("cli-table");
 
 // create the connection information for the sql database
+
 var connection = mysql.createConnection({
   host: "localhost",
 
@@ -22,7 +25,8 @@ connection.connect(function(err) {
   if (err) throw err;
   // run the start function after the connection is made to prompt the user
 });
-// function which prompts the user for what action they should take
+// displays product list for user to see fro SQL query
+
 console.log("WELCOME TO SLIPPERY PETE's HOMEBREW SUPPLY!");
 var displayProducts = function() {
   var query = "Select * FROM products";
@@ -49,6 +53,8 @@ var displayProducts = function() {
   });
 };
 
+// function that asks the user what item and how many they would like to purchase
+
 function purchaseProduct(IDlist) {
   inquirer
     .prompt([
@@ -74,20 +80,21 @@ function purchaseProduct(IDlist) {
 }
 
 function purchaseRequested(ID, purchaseQuantity) {
-  connection.query("Select * FROM products WHERE position = " + ID, function(
+  connection.query("SELECT * FROM products WHERE position = " + ID, function(
     err,
     res
   ) {
     if (err) {
       console.log(err);
     }
-    // Testing functionality
-    // console.log(res);
+
     if (purchaseQuantity <= res[0].stock_quantity) {
-      var cost = res[0].price * purchaseQuantity;
+      var cost = (res[0].price * purchaseQuantity).toFixed(2);
       console.log(
-        "GOOD NEWS!  Your request is available since we have " +
+        "GOOD NEWS! Your request is available since we have " +
           res[0].stock_quantity +
+          " " +
+          res[0].product_name +
           "(s) in stock. Hopefully this will get you BREW READY!!"
       );
       console.log(
@@ -127,19 +134,20 @@ function purchaseRequested(ID, purchaseQuantity) {
           res[0].product_name +
           "(s) in stock. Please request a lower quantity."
       );
+      startOver();
     }
-    // displayProducts();
   });
 }
-displayProducts();
 
 function sellProduct(id, qty) {
   console.log("Thank you for your purchase! HAPPY BREWING!");
-
   connection.query(
     "UPDATE products SET stock_quantity = " + qty + " WHERE position= " + id
   );
+  startOver();
+}
 
+function startOver() {
   inquirer
     .prompt({
       name: "startOver",
@@ -159,3 +167,5 @@ function sellProduct(id, qty) {
       }
     });
 }
+
+displayProducts();
